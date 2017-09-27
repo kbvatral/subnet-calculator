@@ -31,19 +31,23 @@
   if($ip[0] <= 126){
     $ip_class = "A";
   }else if($ip[0] >= 128 && $ip[0] < 192){
-    $ipclass = "B";
+    $ip_class = "B";
   }else if($ip[0] >= 192 && $ip[0] < 224){
-    $ipclass = "C";
+    $ip_class = "C";
   }else if($ip[0] >= 224 && $ip[0] < 240){
-    $ipclass = "D";
+    $ip_class = "D";
   }else if($ip[0] >= 240 && $ip[0] <= 254){
-    $ipclass = "E";
+    $ip_class = "E";
   }else{
     //theres a problem
     echo "Theres a problem with the ip";
   }
 
-  subnet_via_subnet($subnets, $remaining_bits, $default_subnet);
+  $return_values = subnet_via_subnet($subnets, $remaining_bits, $default_subnet);
+
+  $required_bits = $return_values[0];
+  $network_bits = $return_values[1];
+  $custom_subnet = $return_values[2];
 
   //Calculate subnet based on number of required hosts
   function subnet_via_host($hosts, $remaining_bits, $default_subnet){
@@ -55,7 +59,9 @@
       echo "There are not enough bits for your hosts";
     }
 
-    calculate_custom_subnet($network_bits, $required_bits, $default_subnet);
+    $custom_subnet = calculate_custom_subnet($network_bits, $required_bits, $default_subnet);
+
+    return array($required_bits, $network_bits, $custom_subnet);
 
   }
   function subnet_via_subnet($subnets, $remaining_bits, $default_subnet){
@@ -67,7 +73,9 @@
       echo "There are not enough bits for your hosts";
     }
 
-    calculate_custom_subnet($network_bits, $required_bits, $default_subnet);
+    $custom_subnet = calculate_custom_subnet($network_bits, $required_bits, $default_subnet);
+
+    return array($required_bits, $network_bits, $custom_subnet);
 
   }
   function calculate_custom_subnet($network_bits, $required_bits, $default_subnet){
@@ -99,6 +107,31 @@
         }
       }
     }
-    echo $custom_subnet[0],".",$custom_subnet[1],".",$custom_subnet[2],".",$custom_subnet[3];
+    //echo $custom_subnet[0],".",$custom_subnet[1],".",$custom_subnet[2],".",$custom_subnet[3];
+    return $custom_subnet;
   }
 ?>
+<html>
+<head>
+  <title>Subnet Calculator</title>
+</head>
+<body>
+
+Network Address: <?php echo $ip[0],".",$ip[1],".",$ip[2],".",$ip[3]; ?><br />
+Address Class: <?php echo $ip_class; ?><br />
+Default Subnet Mask: <?php echo $default_subnet[0],".",$default_subnet[1],".",$default_subnet[2],".",$default_subnet[3]; ?><br />
+Custom Subnet Mask: <?php echo $custom_subnet[0],".",$custom_subnet[1],".",$custom_subnet[2],".",$custom_subnet[3]; ?><br />
+Total Number of Subnets: <?php echo pow(2, $network_bits); ?><br />
+Total Number of Host Addresses: <?php echo pow(2, $required_bits); ?><br />
+Number of Usable Host Addresses: <?php echo (pow(2, $required_bits)-2); ?><br />
+Number of Bits Borrowed: <?php echo $network_bits; ?><br />
+
+<form action="subnet.php" method="get">
+Ip Address: <input type="text" name="ip1"> . <input type="text" name="ip2"> . <input type="text" name="ip3"> . <input type="text" name="ip4"><br>
+Number of subnets: <input type="text" name="subnets"><br>
+Number of hosts: <input type="text" name="hosts"><br>
+<input type="submit">
+</form>
+
+</body>
+</html>
