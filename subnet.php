@@ -43,15 +43,27 @@
     echo "Theres a problem with the ip";
   }
 
-  subnet_host($hosts, $remaining_bits, $default_subnet);
+  subnet_via_subnet($subnets, $remaining_bits, $default_subnet);
 
   //Calculate subnet based on number of required hosts
-  function subnet_host($hosts, $remaining_bits, $default_subnet){
+  function subnet_via_host($hosts, $remaining_bits, $default_subnet){
     //calculate number of bits required for the hosts
     $required_bits = ceil(log(($hosts+2), 2));
     $network_bits = $remaining_bits - $required_bits;
 
     if($network_bits < 0){
+      echo "There are not enough bits for your hosts";
+    }
+
+    calculate_custom_subnet($network_bits, $required_bits, $default_subnet);
+
+  }
+  function subnet_via_subnet($subnets, $remaining_bits, $default_subnet){
+    //calculate number of bits required for given number of subnets
+    $network_bits = ceil(log($subnets, 2));
+    $required_bits = $remaining_bits - $network_bits;
+
+    if($required_bits < 0){
       echo "There are not enough bits for your hosts";
     }
 
