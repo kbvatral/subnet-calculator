@@ -14,12 +14,12 @@
     <div class="w3-half w3-dark-grey w3-container w3-center" id="content">
       <div class="w3-padding-16">
         <h1>Network Information</h1>
-        <form class="w3-container w3-card-2 w3-padding-32 w3-white" action="index.php" method="get">
+        <form name="network_info" class="w3-container w3-card-2 w3-padding-32 w3-white" action="index.php" method="get">
           <div class="w3-section">
             <label>IP Address</label><br />
-            <input class="v-input" style="width:18%;" type="text" name="ip1" maxlength="3" required> .
-            <input class="v-input" style="width:18%;" type="text" name="ip2" maxlength="3" required> .
-            <input class="v-input" style="width:18%;" type="text" name="ip3" maxlength="3" required> .
+            <input class="v-input" style="width:18%;" type="text" name="ip1" maxlength="3" required oninput="autotab(this, document.network_info.ip2)"> .
+            <input class="v-input" style="width:18%;" type="text" name="ip2" maxlength="3" required oninput="autotab(this, document.network_info.ip3)"> .
+            <input class="v-input" style="width:18%;" type="text" name="ip3" maxlength="3" required oninput="autotab(this, document.network_info.ip4)"> .
             <input class="v-input" style="width:18%;" type="text" name="ip4" maxlength="3" required>
           </div>
           <div class="w3-section">
@@ -135,6 +135,11 @@ function changeRequired(){
     sub_field[0].removeAttribute("required");
   }
 
+}
+function autotab(current,to){
+    if (current.getAttribute && current.value.length==current.getAttribute("maxlength")){
+        to.focus()
+    }
 }
 </script>
 </html>
